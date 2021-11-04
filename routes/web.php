@@ -16,3 +16,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::group(['prefix' => 'panel','namespace' => 'Backend','as' => 'panel.'], function (){
+    Route::group(['prefix' => 'auth','as' => 'auth.'], function (){
+        Route::get('/login','AuthController@loginIndex')->name('login.index');
+        Route::post('/login-process','AuthController@loginProcess')->name('login.process');
+    });
+
+    Route::group(['middleware' => 'AdminMiddleware'], function (){
+        Route::get('/','HomeController@index')->name('home.index');
+        Route::get('/auth/logout','AuthController@logout')->name('auth.logout');
+    });
+});
