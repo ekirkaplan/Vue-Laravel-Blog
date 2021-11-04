@@ -26,5 +26,14 @@ Route::group(['prefix' => 'panel','namespace' => 'Backend','as' => 'panel.'], fu
     Route::group(['middleware' => 'AdminMiddleware'], function (){
         Route::get('/','HomeController@index')->name('home.index');
         Route::get('/auth/logout','AuthController@logout')->name('auth.logout');
+
+        Route::group(['prefix' => '/category-manage', 'as' => 'category-manage.'], function (){
+            Route::get('/list','CategoryController@list')->name('list.index');
+            Route::post('/process/{id?}','CategoryController@process')->name('list.process');
+            Route::get('/destroy/{id}','CategoryController@destroy')->name('list.destroy');
+        });
+
     });
+
+
 });

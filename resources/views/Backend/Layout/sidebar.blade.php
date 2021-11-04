@@ -15,6 +15,13 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="{{ route('panel.category-manage.list.index') }}" class="waves-effect">
+                        <i class="ri-dashboard-line"></i>
+                        <span>Kategori Listesi</span>
+                    </a>
+                </li>
+
             </ul>
         </div>
         <!-- Sidebar -->
