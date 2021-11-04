@@ -22,6 +22,13 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="{{ route('panel.blog-manage.list.index') }}" class="waves-effect">
+                        <i class="ri-dashboard-line"></i>
+                        <span>Blog Yazı Listesi</span>
+                    </a>
+                </li>
+
             </ul>
         </div>
         <!-- Sidebar -->

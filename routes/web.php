@@ -33,6 +33,12 @@ Route::group(['prefix' => 'panel','namespace' => 'Backend','as' => 'panel.'], fu
             Route::get('/destroy/{id}','CategoryController@destroy')->name('list.destroy');
         });
 
+        Route::group(['prefix' => '/blog-manage', 'as' => 'blog-manage.'], function (){
+            Route::get('/list','BlogController@list')->name('list.index');
+            Route::get('/form/{id?}','BlogController@form')->name('form.index');
+            Route::post('/editor-photos-upload','BlogController@editorUpload')->name('form.editorUpload');
+        });
+
     });
 
 
