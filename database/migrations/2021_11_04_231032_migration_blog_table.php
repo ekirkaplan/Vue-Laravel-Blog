@@ -12,7 +12,7 @@ class MigrationBlogTable extends Migration
             $table->bigIncrements('id');
             $table->string('name',100);
             $table->string('slug',150)->index();
-            $table->string('img')->nullable();
+            $table->bigInteger('img')->unsigned()->default(0)->nullable();
             $table->longText('content')->nullable();
             $table->boolean('status')->default(1)->nullable();
             $table->date('streamDate');

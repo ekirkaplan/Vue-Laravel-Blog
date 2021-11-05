@@ -1,13 +1,67 @@
 @extends('Backend.Layout.master')
 @section('title', $data->id > 0 ? 'Blog Yazısını Güncelle' : 'Blog Yazısı Ekle')
 @section('cssBefore')
-
+    <link href="{{ asset('backend/assets/libs/dropzone/min/dropzone.min.css') }}" rel="stylesheet" type="text/css"/>
 @endsection
 @section('cssAfter')
     <style>
-        .blogImage {
+
+        img.blogImage {
+            top: 3px;
+            position: absolute;
+            width: 90%;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+        }
+
+        div.dropzone {
+            position: relative;
+            color: white !important;
+            height: 230px !important;
+        }
+
+        div.dropzone:before {
+            content: " ";
+            position: absolute;
+            background: rgba(0, 0, 0, 0.5);
             width: 100%;
-            display: block;
+            height: 100%;
+            left: 0;
+            top: 0;
+            z-index: 1;
+        }
+
+        .uploadText {
+            position: relative;
+            position: relative;
+            z-index: 3;
+        }
+
+        .dropzone .dz-preview .dz-image {
+            width: unset;
+            height: unset;
+        }
+
+        .dropzone .dz-preview {
+            margin: 0 !important;
+            max-width: 100% !important;
+
+        }
+
+        .dropzone .dz-preview .dz-image img {
+            max-width: 100%;
+        }
+
+        .data-dz-remove {
+            width: 50px;
+            background: rgba(0,0,0,0.4);
+            font-size: 29px;
+            position: relative;
+            top: -133px;
+            z-index: 500;
+            color: red;
+            margin: 0 auto;
         }
     </style>
 @endsection
@@ -30,7 +84,7 @@
     </div>
 
     <div class="row">
-        <form style="display: flex;width: 95%; margin: 0 auto" action="">
+        <form style="display: flex;width: 95%; margin: 0 auto" id="form" action="">
             @csrf
             <div class="col-12 col-lg-8">
                 <div class="card">
@@ -77,20 +131,27 @@
 
                                 <div class="row form-group">
                                     <div class="col-12">
-                                        <div class="imageContainer">
-                                            <img src="{{ asset('backend/assets/images/authentication-bg.jpg') }}" class="blogImage" alt="">
-                                        </div>
-                                    </div>
-                                </div>
+                                        <div class="dropzone" id="galleryDropZone">
+                                            @if ($data->id > 0)
+                                                <img src="{{ asset(\App\Models\Gallery::find($data->img)->img) }}" class="blogImage" alt="">
+                                            @else
+                                                <img src="{{ asset('backend/assets/images/authentication-bg.jpg') }}" class="blogImage" alt="">
+                                            @endif
+                                            <div class="fallback">
+                                                @csrf
+                                                <input name="file" type="file">
+                                            </div>
+                                            <div class="dz-message needsclick">
+                                                <div class="mb-3 uploadText">
+                                                    <i class="display-4 text-white ri-upload-cloud-2-line"></i>
+                                                </div>
 
-                                <div class="row form-group">
-                                    <div class="col-12">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="customFile">
-                                            <label class="custom-file-label" for="customFile">Blog Yazısı Kapak Resmi</label>
+                                                <h4 class="text-white uploadText">Tıkla Veya Resmi Sürükle</h4>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <input type="hidden" id="mainImg" value="{{ $data->id > 0 ? $data->img : 0 }}" name="img">
 
                                 <h3 class="card-title">Blog Kategorileri (Birden Çok Seçilebilir)</h3>
                                 @foreach(\App\Models\Category::all() as $category)
@@ -121,10 +182,9 @@
                                         </div>
                                     @endif
                                 @endforeach
-
                                 <div class="row mt-4">
                                     <div class="col-12">
-                                        <button class="btn btn-success w-100" id="sendButton">{{ $data->id > 0 ? 'Güncelle' : 'Kaydet' }}</button>
+                                        <button class="btn btn-success w-100" type="button" id="sendButton" onclick="sendForm()">{{ $data->id > 0 ? 'Güncelle' : 'Kaydet' }}</button>
                                     </div>
                                 </div>
                             </div>
@@ -141,8 +201,109 @@
 @section('jsAfter')
     <script src="{{ asset('backend/assets/libs/tinymce/tinymce.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/tinymce/langs/tr_TR.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/dropzone/min/dropzoneTwo.min.js') }}"></script>+
+    <script src="{{ asset('backend/assets/libs/validate/validate.min.js') }}"></script>
     <script>
+        Dropzone.autoDiscover = false;
+
+        function sendForm() {
+            $("#form").submit();
+        }
+
+        $("#form").validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 4
+                },
+                streamDate: {
+                    required: true,
+                },
+            },
+            messages: {
+                name: {
+                    required: "Blog Adını Girmediniz",
+                    minlength: "Blog Adı En Az 4 Karakter Olmalıdır",
+                },
+                streamDate: {
+                    required: "Yayın Tarihini Girmediniz !",
+                },
+            },
+            submitHandler: function (form) {
+               // $("#loginButton").prop('disabled', true);
+                // validate
+                var validateStatus = 0;
+                var processStatus = {!! $data->id > 0 ? 1 : 0 !!};
+                var imgStatus = parseInt($("#mainImg").val())
+                console.log(imgStatus);
+                if (imgStatus < 1){
+                    validateStatus = 10;
+                    toastr.error('Kapak Resmi Seçmediniz');
+                }
+                var categoryStatus = $(".categorySwitch").is(':checked');
+                if (categoryStatus === false){
+                    toastr.error('Hiç Kategori Seçmediniz!');
+                    validateStatus = 10;
+                }
+
+                if (validateStatus < 1){
+                    $("#sendButton").prop('disabled', true);
+                    $.ajax({
+                        url: "{{ route('panel.blog-manage.form.process', $data->id) }}",
+                        method: "POST",
+                        data: $("#form").serialize(),
+                        success: function (res) {
+                            if (parseInt(res.statusCode) > 0) {
+                                toastr.success(res.statusMessage);
+                                setTimeout(function () {
+                                    window.location.href = "{{ route('panel.blog-manage.list.index') }}";
+                                }, 1900)
+                            } else {
+                                toastr.error(res.statusMessage);
+                                $("#sendButton").prop('disabled', false);
+                            }
+                        }
+                    });
+                }
+                // validate End
+            }
+        });
+
+
+        Dropzone.options.galleryDropZone = {
+            thumbnailHeight: 200,
+            thumbnailWidth: null,
+            addRemoveLinks: false,
+            thumbnailMethod: "contain",
+            dictRemoveFile: '<div class="data-dz-remove"><i class="fas fa-ban"></i></div>',
+            init: function () {
+
+                this.on("removedfile", function () {
+                    $("#mainImg").val(null);
+                });
+
+                this.on("addedfile", function () {
+                    if (this.files[1] != null) {
+                        this.removeFile(this.files[0]);
+                    }
+                });
+                this.on("success", function (response) {
+                    if (response.xhr.response > 0) {
+                        toastr.success('Resim Başarılı Bir Şekilde Eklendi');
+                        $("#mainImg").val(response.xhr.response);
+                    } else {
+                        toastr.error('Resim Eklenemedi Resim 3MB Geçmemeli !!!');
+                    }
+                });
+            }
+        };
+
         $(document).ready(function () {
+            $(".dropzone").dropzone({
+                url: "{{ route('panel.blog-manage.form.addPhoto') }}", headers: {
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
             tinymce.init({
                 selector: "#contents",
                 height: 450,

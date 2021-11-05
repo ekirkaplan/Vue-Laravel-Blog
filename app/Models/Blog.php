@@ -16,6 +16,11 @@ class Blog extends Model
         return $this->belongsToMany(Category::class,'blogCategory')->using(BlogCategory::class);
     }
 
+    public function coverImage()
+    {
+        return $this->belongsTo(Gallery::class,'img','id');
+    }
+
     public function comments()
     {
         return $this->hasMany(Comments::class,'blogId','id');

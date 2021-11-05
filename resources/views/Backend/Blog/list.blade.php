@@ -53,7 +53,21 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-
+                                    @foreach ($list as $item)
+                                        <tr>
+                                            <td>{{ $item->id }}</td>
+                                            <td><img src="{{ asset($item->coverImage->img) }}" style="height: 50px;display: block;margin: 0 auto" alt=""></td>
+                                            <td>{{ $item->name }}</td>
+                                            <td>{!! $item->status > 0 ? '<span class="badge badge-success">Yayında</span>' : '<span class="badge badge-danger">Pasif</span>' !!}</td>
+                                            <td>{{ $item->streamDate }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{{ route('panel.blog-manage.form.index', $item->id) }}" class="btn btn-success btn-sm">Düzenle</a>
+                                                    <button type="button" onclick="destroy({{ $item->id }})" class="btn btn-danger btn-sm">Sil</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -86,8 +100,8 @@
     <script>
         function destroy(id) {
             Swal.fire({
-                title: 'Kategoriyi Silmekmi İstiyorsun',
-                html: "Kategoriyi <b>siliyorsun geri dönüşü olmayacak !</b>",
+                title: 'Blog Yazısını Silmekmi İstiyorsun',
+                html: "Blog Yazısını <b>siliyorsun geri dönüşü olmayacak !</b>",
                 icon: 'error',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -97,14 +111,14 @@
             }).then((result) => {
                 if(result.value == true && id > 0){
                     $.ajax({
-                        url: "/panel/category-manage/destroy/"+id,
+                        url: "/panel/blog-manage/destroy/"+id,
                         method: "GET",
                         success: function(res) {
                             if(parseInt(res.statusCode) > 0)
                             {
                                 toastr.success(res.statusMessage)
                                 setTimeout(function (){
-                                    window.location.href="{{ route('panel.category-manage.list.index') }}";
+                                    window.location.href="{{ route('panel.blog-manage.list.index') }}";
                                 }, 1900)
                             }else {
                                 toastr.error(res.statusMessage)

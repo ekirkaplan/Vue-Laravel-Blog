@@ -37,7 +37,10 @@ Route::group(['prefix' => 'panel','namespace' => 'Backend','as' => 'panel.'], fu
         Route::group(['prefix' => '/blog-manage', 'as' => 'blog-manage.'], function (){
             Route::get('/list','BlogController@list')->name('list.index');
             Route::get('/form/{id?}','BlogController@form')->name('form.index');
+            Route::get('/destroy/{id}','BlogController@destroy')->name('list.destroy');
+            Route::post('/form-process/{id?}','BlogController@formProcess')->name('form.process');
             Route::post('/editor-photos-upload','BlogController@editorUpload')->name('form.editorUpload');
+            Route::post('/blog-photos-upload','BlogController@addPhoto')->name('form.addPhoto');
         });
 
     });
