@@ -13,7 +13,6 @@ class MigrationCommentsTable extends Migration
             $table->bigInteger('blogId')->unsigned();
             $table->string('name');
             $table->string('email',150);
-            $table->string('title',50);
             $table->text('content');
             $table->boolean('status')->default(0)->nullable();
             $table->timestamps();

@@ -4,29 +4,36 @@
         <!-- End Row -->
 
        <section  id="page-content">
-           <div class="container">
+           <div class="container" >
                <div class="row" v-for="(item, index) in categoryList" >
                    <div class="col-12">
-                       <h3>{{ item.name }}</h3>
-                       <div :id="'blog'+index" class="grid-layout post-2-columns m-b-30" data-item="post-item">
+                       <div class="card">
+                           <div class="card-body">
+                               <h3>{{ item.name }}</h3>
+                               <hr>
+                               <div :id="'blog'+index" class="grid-layout post-2-columns m-b-30" data-item="post-item">
 
-                           <div class="post-item border" v-for="blog in item.blogList">
-                               <div class="post-item-wrap">
-                                   <div class="post-image">
-                                       <a href="#">
-                                           <img alt="" :src="blog.img">
-                                       </a>
+                                   <div class="post-item border" v-for="blog in item.blogList">
+                                       <div class="post-item-wrap">
+                                           <div class="post-image">
+                                               <router-link :to="'/yazi/'+blog.slug">
+                                                   <img alt="" :src="blog.img">
+                                               </router-link>
+                                           </div>
+                                           <div class="post-item-description">
+                                               <span class="post-meta-date"><i class="fa fa-calendar-o"></i>{{blog.streamDate}}</span>
+                                               <span class="post-meta-comments">
+                                    <router-link  :to="'/yazi/'+blog.slug"><i class="fa fa-comments-o"></i>{{ blog.commentsCount }} Yorum</router-link>
+                                </span>
+                                               <h2><a href="#">{{blog.name}}</a></h2>
+                                               <p>{{blog.contentShort}}</p>
+                                               <router-link :to="'/yazi/'+blog.slug" class="item-link">Devamını Oku<i class="icon-chevron-right"></i></router-link>
+                                           </div>
+                                       </div>
                                    </div>
-                                   <div class="post-item-description">
-                                       <span class="post-meta-date"><i class="fa fa-calendar-o"></i>{{blog.streamDate}}</span> <span class="post-meta-comments"><a
-                                       href=""><i class="fa fa-comments-o"></i>33 Yorum</a></span>
-                                       <h2><a href="#">{{blog.name}}</a></h2>
-                                       <p>{{blog.contentShort}}</p>
-                                       <a href="#" class="item-link">Devamını Oku<i class="icon-chevron-right"></i></a>
-                                   </div>
+
                                </div>
                            </div>
-
                        </div>
                    </div>
                </div>
@@ -65,11 +72,26 @@ export default {
     created() {
         this.categoryGet();
         this.sliderGet();
+
+    },
+    updated() {
+        this.$nextTick( () => {
+            this.$unloadScript("/js/functions.js");
+            $(document).trigger("ready")
+            this.$loadScript("/js/functions.js")
+        })
     },
     mounted() {
         setTimeout(() => {
             this.$loadScript("/js/functions.js")
         },1000)
+    },
+    head: {
+        title: function () {
+            return {
+                inner: "Anasayfa | Vue Laravel Blog Project"
+            }
+        }
     }
 }
 </script>

@@ -5,7 +5,9 @@ import VueRouter from "vue-router";
 import {routes} from "./route";
 import layout from "./layout";
 import LoadScript from 'vue-plugin-load-script';
+import VueHead from 'vue-head'
 
+Vue.use(VueHead)
 Vue.use(LoadScript);
 Vue.use(VueRouter);
 

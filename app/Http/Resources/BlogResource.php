@@ -22,8 +22,11 @@ class BlogResource extends JsonResource
             'img' => asset($this->coverImage->img),
             'content' => $this->content,
             'contentShort' => Str::limit(strip_tags($this->content), 120,'...'),
-            'streamDate' => $this->streamDate->format('d m Y'),
+            'streamDate' => $this->streamDate->format('d/m/Y'),
             'created_at' => $this->created_at->format('d/m/Y'),
+            'category' => $this->category,
+            'commentsCount' => $this->comments->where('status', 1)->count(),
+            'comments' => CommentResource::collection($this->comments->where('status', 1)),
         ];
     }
 }

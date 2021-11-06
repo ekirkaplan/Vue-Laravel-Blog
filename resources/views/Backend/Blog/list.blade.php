@@ -59,7 +59,7 @@
                                             <td><img src="{{ asset($item->coverImage->img) }}" style="height: 50px;display: block;margin: 0 auto" alt=""></td>
                                             <td>{{ $item->name }}</td>
                                             <td>{!! $item->status > 0 ? '<span class="badge badge-success">Yayında</span>' : '<span class="badge badge-danger">Pasif</span>' !!}</td>
-                                            <td>{{ $item->streamDate }}</td>
+                                            <td>{{  $item->streamDate->format('d/m/Y') }}</td>
                                             <td>
                                                 <div class="btn-group">
                                                     <a href="{{ route('panel.blog-manage.form.index', $item->id) }}" class="btn btn-success btn-sm">Düzenle</a>

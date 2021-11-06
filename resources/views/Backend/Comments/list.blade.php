@@ -13,12 +13,12 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-flex align-items-center justify-content-between">
-                <h4 class="mb-0">Kategori Listesi</h4>
+                <h4 class="mb-0">Yorum Listesi</h4>
 
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="javascript: void(0);">Anasayfa</a></li>
-                        <li class="breadcrumb-item active">Kategori Listesi</li>
+                        <li class="breadcrumb-item active">Yorum Listesi</li>
                     </ol>
                 </div>
 
@@ -30,12 +30,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h3 class="card-title">Kategori Listesi</h3>
-                    <div class="row">
-                        <div class="col-12 text-right">
-                            <button data-toggle="modal" data-target="#newCategory" class="btn btn-success">Yeni Kategori Oluştur</button>
-                        </div>
-                    </div>
+                    <h3 class="card-title">Yorum Listesi</h3>
 
                     <div class="row mt-4">
                         <div class="col-12">
@@ -44,8 +39,9 @@
                                     <thead class="bg-dark text-white">
                                     <tr>
                                         <th>ID</th>
-                                        <th>Kategori Adı</th>
-                                        <th>İçerik Sayısı</th>
+                                        <th>Blog Yazısı</th>
+                                        <th>E-Posta</th>
+                                        <th>İsim</th>
                                         <th>Yayın Durumu</th>
                                         <th>İşlemler</th>
                                     </tr>
@@ -54,13 +50,19 @@
                                     @foreach($list as $item)
                                         <tr>
                                             <td>{{ $item->id }}</td>
+                                            <td>{{ $item->blog->name }}</td>
+                                            <td>{{ $item->email }}</td>
                                             <td>{{ $item->name }}</td>
-                                            <td>{{ $item->blog->count() }}</td>
-                                            <td>{!! $item->status > 0 ? '<span class="badge badge-success">Yayında</span>' : '<span class="badge badge-danger">Pasif</span>' !!}</td>
+                                            <td>
+                                                @if ($item->status > 0)
+                                                    <a href="{{ route('panel.comment-manage.list.swap', $item->id) }}" class="badge badge-success">Yayında</a>
+                                                @else
+                                                    <a href="{{ route('panel.comment-manage.list.swap', $item->id) }}" class="badge badge-danger">Onay Bekliyor</a>
+                                                @endif
+                                            </td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <button data-toggle="modal" data-target="#categoryEdit{{ $item->id }}" class="btn btn-success btn-sm">Düzenle</button>
-                                                    <button onclick="destroy({{ $item->id }})" class="btn btn-danger btn-sm">Sil</button>
+                                                    <button data-toggle="modal" data-target="#categoryEdit{{ $item->id }}" class="btn btn-success btn-sm">Detay</button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -69,33 +71,16 @@
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Kategoriyi Güncelle</h5>
+                                                        <h5 class="modal-title" id="exampleModalLabel">Yorum Detayı</h5>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
-                                                    <form action="{{ route('panel.category-manage.list.process', $item->id) }}" method="POST">
                                                         <div class="modal-body">
-                                                            @csrf
-                                                            <div class="form-group row">
-                                                                <div class="col-12">
-                                                                    <label for="name">Kategori Adı</label>
-                                                                    <input type="text" class="form-control" name="name" id="name" value="{{ $item->name }}" placeholder="Kategori Adı" required>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group row">
-                                                                <div class="col-12">
-                                                                    <label for="statuss">Yayın Durumu</label>
-                                                                    <select name="status" class="form-control" id="statuss">
-                                                                        <option {{ $item->status == 1 ? 'selected' : '' }} value="1">Yayında</option>
-                                                                        <option {{ $item->status == 0 ? 'selected' : '' }} value="0">Pasif</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
+                                                            <p>{{ $item->content }}</p>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
-                                                            <button type="submit" class="btn btn-primary">Güncelle</button>
                                                         </div>
                                                     </form>
                                                 </div>

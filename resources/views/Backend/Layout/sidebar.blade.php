@@ -29,6 +29,13 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="{{ route('panel.comment-manage.list.index') }}" class="waves-effect">
+                        <i class="ri-dashboard-line"></i>
+                        <span>Yorumlar</span>
+                    </a>
+                </li>
+
             </ul>
         </div>
         <!-- Sidebar -->
