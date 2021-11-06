@@ -32,4 +32,8 @@ class Blog extends Model
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
     }
+
+    protected $casts = [
+        'streamDate' => 'date',
+    ];
 }

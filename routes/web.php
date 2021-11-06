@@ -14,9 +14,7 @@
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::view('/{any}','index')->where('any', '^(?!.*panel).*$');
 
 Route::group(['prefix' => 'panel','namespace' => 'Backend','as' => 'panel.'], function (){
     Route::group(['prefix' => 'auth','as' => 'auth.'], function (){

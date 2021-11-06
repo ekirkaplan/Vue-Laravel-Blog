@@ -15,12 +15,13 @@
 </head>
 <body>
 <div class="body-inner">
-
+    <div id="app"></div>
 </div>
 
 
 <script src="{{ asset('js/jquery.js') }}"></script>
 <script src="{{ asset('js/plugins.js') }}"></script>
-<script src="{{ asset('js/functions.js') }}"></script>
+
+<script src="{{ mix('vue/app.js') }}"></script>
 </body>
 </html>

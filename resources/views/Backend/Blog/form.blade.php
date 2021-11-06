@@ -107,7 +107,7 @@
                             </div>
                             <div class="col-12 col-lg-6">
                                 <label for="streamDate">Yazı Yayın Tarihi</label>
-                                <input type="date" class="form-control" id="streamDate" name="streamDate" value="{{ $data->streamDate }}">
+                                <input type="date" class="form-control" id="streamDate" name="streamDate" value="{{ $data->id > 0 ? $data->streamDate : now()->format('Y-m-d') }}">
                             </div>
                         </div>
 
